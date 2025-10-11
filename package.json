@@ -1,0 +1,41 @@
+{
+  "name": "video-to-frames",
+  "version": "1.0.0",
+  "description": "A Node.js tool that converts videos to exactly 300 evenly spaced PNG frames in original resolution with highest quality",
+  "main": "index.js",
+  "bin": {
+    "video-to-frames": "./cli.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "cli": "node cli.js",
+    "electron": "electron main-electron.js",
+    "build": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "video",
+    "frames",
+    "ffmpeg",
+    "converter",
+    "png",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "progress": "^2.0.3"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to Frames Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .drop-zone {
+            border: 3px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 60px 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f7fafc;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: #667eea;
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+        .drop-zone-text {
+            font-size: 1.2em;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone-subtext {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .file-info {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            display: none;
+        }
+
+        .file-info h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .file-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .file-info-item {
+            color: #4a5568;
+        }
+
+        .file-info-label {
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .status.success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: #2f855a;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+        }
+
+        .status.info {
+            background: #ebf8ff;
+            border: 1px solid #90cdf4;
+            color: #2b6cb0;
+        }
+
+        .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Video to Frames</h1>
+        <p class="subtitle">Convert videos to exactly 300 evenly spaced PNG frames in full HD quality</p>
+        
+        <div class="drop-zone" id="dropZone">
+            <div class="icon">📹</div>
+            <div class="drop-zone-text">Drop your video file here</div>
+            <div class="drop-zone-subtext">or click to browse (MP4, AVI, MOV, MKV, WMV, etc.)</div>
+        </div>
+
+        <div class="file-info" id="fileInfo">
+            <h3>📊 Video Information</h3>
+            <div class="file-info-grid" id="fileInfoGrid">
+                <!-- Video info will be populated here -->
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <label for="outputPath">Output Folder:</label>
+                <input type="text" id="outputPath" placeholder="Select output folder..." readonly>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" id="selectVideoBtn">Select Video</button>
+                <button class="btn btn-secondary" id="selectOutputBtn">Select Output Folder</button>
+            </div>
+
+            <button class="btn btn-primary" id="convertBtn" disabled>
+                🚀 Convert to 300 Frames
+            </button>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-text" id="progressText">Extracting frames... 0/300 (0%)</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="status" id="status">
+            <!-- Status messages will appear here -->
+        </div>
+    </div>
+
+    <script>
+        let selectedVideoPath = '';
+        let selectedOutputPath = '';
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileInfoGrid = document.getElementById('fileInfoGrid');
+        const outputPathInput = document.getElementById('outputPath');
+        const selectVideoBtn = document.getElementById('selectVideoBtn');
+        const selectOutputBtn = document.getElementById('selectOutputBtn');
+        const convertBtn = document.getElementById('convertBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const status = document.getElementById('status');
+
+        // Drag and drop handlers
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            const videoFile = files.find(file => 
+                file.type.startsWith('video/') || 
+                /\.(mp4|avi|mov|mkv|wmv|flv|webm)$/i.test(file.name)
+            );
+
+            if (videoFile) {
+                await handleVideoSelection(videoFile.path);
+            } else {
+                showStatus('Please drop a valid video file.', 'error');
+            }
+        });
+
+        // Click to browse
+        dropZone.addEventListener('click', async () => {
+            const videoPath = await window.electronAPI.selectVideoFile();
+            if (videoPath) {
+                await handleVideoSelection(videoPath);
+            }
+        });
+
+        // Button handlers
+        selectVideoBtn.addEventListener('click', async () => {
+            const videoPath = await window.electronAPI.selectVideoFile();
+            if (videoPath) {
+                await handleVideoSelection(videoPath);
+            }
+        });
+
+        selectOutputBtn.addEventListener('click', async () => {
+            const outputPath = await window.electronAPI.selectOutputFolder();
+            if (outputPath) {
+                selectedOutputPath = outputPath;
+                outputPathInput.value = outputPath;
+                updateConvertButton();
+            }
+        });
+
+        convertBtn.addEventListener('click', async () => {
+            if (!selectedVideoPath || !selectedOutputPath) {
+                showStatus('Please select both video file and output folder.', 'error');
+                return;
+            }
+
+            await convertVideo();
+        });
+
+        // Progress tracking
+        window.electronAPI.onConversionProgress((data) => {
+            updateProgress(data.current, data.total, data.percent);
+        });
+
+        async function handleVideoSelection(videoPath) {
+            selectedVideoPath = videoPath;
+            showStatus('Analyzing video...', 'info');
+
+            try {
+                const result = await window.electronAPI.getVideoInfo(videoPath);
+                
+                if (result.success) {
+                    displayVideoInfo(videoPath, result.data);
+                    
+                    // Set default output path
+                    if (!selectedOutputPath) {
+                        const videoDir = videoPath.substring(0, videoPath.lastIndexOf('\\') || videoPath.lastIndexOf('/'));
+                        selectedOutputPath = videoDir + '/frames';
+                        outputPathInput.value = selectedOutputPath;
+                    }
+                    
+                    updateConvertButton();
+                    showStatus('Video loaded successfully! Ready to convert.', 'success');
+                } else {
+                    showStatus(`Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Error analyzing video: ${error.message}`, 'error');
+            }
+        }
+
+        function displayVideoInfo(filePath, metadata) {
+            const fileName = filePath.split(/[\\/]/).pop();
+            
+            fileInfoGrid.innerHTML = `
+                <div class="file-info-item">
+                    <span class="file-info-label">File:</span> ${fileName}
+                </div>
+                <div class="file-info-item">
+                    <span class="file-info-label">Duration:</span> ${metadata.duration.toFixed(2)}s
+                </div>
+                <div class="file-info-item">
+                    <span class="file-info-label">Frame Rate:</span> ${metadata.frameRate.toFixed(2)} fps
+                </div>
+                <div class="file-info-item">
+                    <span class="file-info-label">Total Frames:</span> ${metadata.totalFrames.toLocaleString()}
+                </div>
+                <div class="file-info-item">
+                    <span class="file-info-label">Resolution:</span> ${metadata.width}x${metadata.height}
+                </div>
+                <div class="file-info-item">
+                    <span class="file-info-label">Codec:</span> ${metadata.codec}
+                </div>
+            `;
+            
+            fileInfo.style.display = 'block';
+        }
+
+        function updateConvertButton() {
+            convertBtn.disabled = !selectedVideoPath || !selectedOutputPath;
+        }
+
+        async function convertVideo() {
+            convertBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            showStatus('Starting conversion...', 'info');
+
+            try {
+                const result = await window.electronAPI.convertVideo(selectedVideoPath, selectedOutputPath);
+                
+                if (result.success) {
+                    showStatus(`✅ Successfully converted video to 300 frames!\nOutput saved to: ${result.data.outputDirectory}`, 'success');
+                    updateProgress(300, 300, 100);
+                } else {
+                    showStatus(`❌ Conversion failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error during conversion: ${error.message}`, 'error');
+            } finally {
+                convertBtn.disabled = false;
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    updateProgress(0, 300, 0);
+                }, 3000);
+            }
+        }
+
+        function updateProgress(current, total, percent) {
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `Extracting frames... ${current}/${total} (${percent}%)`;
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                if (type !== 'success') {
+                    status.style.display = 'none';
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
