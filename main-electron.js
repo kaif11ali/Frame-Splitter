@@ -75,22 +75,38 @@ ipcMain.handle('get-video-info', async (event, videoPath) => {
     }
 });
 
-ipcMain.handle('convert-video', async (event, videoPath, outputPath) => {
+ipcMain.handle('convert-video', async (event, videoPath, outputPath, options = {}) => {
     try {
         // Create a custom converter instance for this conversion to handle progress
         const progressConverter = new VideoToFramesConverter();
+        
+        // Apply custom settings if provided
+        if (options.frameCount) {
+            progressConverter.setTargetFrameCount(options.frameCount);
+        } else if (options.autoFrameCount) {
+            progressConverter.enableAutoFrameCount();
+        }
+        
+        if (options.frameRate) {
+            progressConverter.setCustomFrameRate(options.frameRate);
+        }
         
         // Override the progress tracking
         let progressCallback = null;
         
         const originalExtractFrame = progressConverter.extractFrame;
-        progressConverter.extractFrame = async function(videoPath, timestamp, outputPath) {
-            const result = await originalExtractFrame.call(this, videoPath, timestamp, outputPath);
+        progressConverter.extractFrame = async function(videoPath, timestamp, outputPath, metadata) {
+            const result = await originalExtractFrame.call(this, videoPath, timestamp, outputPath, metadata);
             if (progressCallback) {
                 progressCallback();
             }
             return result;
         };
+
+        // Get metadata to determine total frames
+        const metadata = await progressConverter.getVideoMetadata(videoPath);
+        let totalFrames = options.frameCount || 
+                         (options.autoFrameCount ? progressConverter.calculateAutoFrameCount(metadata) : 300);
 
         // Set up progress tracking
         let currentFrame = 0;
@@ -98,12 +114,12 @@ ipcMain.handle('convert-video', async (event, videoPath, outputPath) => {
             currentFrame++;
             mainWindow.webContents.send('conversion-progress', {
                 current: currentFrame,
-                total: 300,
-                percent: Math.round((currentFrame / 300) * 100)
+                total: totalFrames,
+                percent: Math.round((currentFrame / totalFrames) * 100)
             });
         };
 
-        const result = await progressConverter.convertVideo(videoPath, outputPath);
+        const result = await progressConverter.convertVideo(videoPath, outputPath, options);
         return { success: true, data: result };
     } catch (error) {
         return { success: false, error: error.message };

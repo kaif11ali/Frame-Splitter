@@ -25,6 +25,42 @@ class VideoToFramesConverter {
         this.targetFrameCount = 300;
         this.outputQuality = 1; // Highest quality for PNG
         this.ffmpegCapabilities = null;
+        this.customFrameRate = null; // Custom frame rate (null = use video's original)
+        this.autoFrameCount = true; // Automatically calculate frame count based on video
+    }
+
+    /**
+     * Set the number of frames to extract
+     * @param {number} count - Number of frames to extract
+     */
+    setTargetFrameCount(count) {
+        this.targetFrameCount = count;
+        this.autoFrameCount = false;
+    }
+
+    /**
+     * Enable automatic frame count based on video duration and frame rate
+     */
+    enableAutoFrameCount() {
+        this.autoFrameCount = true;
+    }
+
+    /**
+     * Set custom frame rate for extraction
+     * @param {number|null} fps - Custom frame rate (null to use original)
+     */
+    setCustomFrameRate(fps) {
+        this.customFrameRate = fps;
+    }
+
+    /**
+     * Calculate optimal frame count based on video metadata
+     * @param {Object} metadata - Video metadata
+     * @returns {number} Calculated frame count
+     */
+    calculateAutoFrameCount(metadata) {
+        // Extract 1 frame per second by default for auto mode
+        return Math.min(Math.floor(metadata.duration), metadata.totalFrames);
     }
 
     /**
@@ -97,13 +133,14 @@ class VideoToFramesConverter {
      * Calculate frame timestamps for even spacing
      * @param {number} totalFrames - Total frames in video
      * @param {number} duration - Video duration in seconds
+     * @param {number} targetCount - Target number of frames to extract
      * @returns {Array<number>} Array of timestamps in seconds
      */
-    calculateFrameTimestamps(totalFrames, duration) {
+    calculateFrameTimestamps(totalFrames, duration, targetCount) {
         const timestamps = [];
-        const interval = totalFrames / this.targetFrameCount;
+        const interval = totalFrames / targetCount;
         
-        for (let i = 0; i < this.targetFrameCount; i++) {
+        for (let i = 0; i < targetCount; i++) {
             const frameIndex = Math.floor(i * interval);
             const timestamp = (frameIndex / totalFrames) * duration;
             timestamps.push(timestamp);
@@ -195,17 +232,19 @@ class VideoToFramesConverter {
     }
 
     /**
-     * Convert video to 300 evenly spaced frames
+     * Convert video to frames
      * @param {string} videoPath - Path to input video
      * @param {string} outputDir - Output directory (defaults to 'frames')
+     * @param {Object} options - Conversion options
+     * @param {number} options.frameCount - Number of frames to extract (overrides auto)
+     * @param {number} options.frameRate - Custom frame rate (overrides original)
      * @returns {Promise<void>}
      */
-    async convertVideo(videoPath, outputDir = 'frames') {
+    async convertVideo(videoPath, outputDir = 'frames', options = {}) {
         try {
             console.log(chalk.blue('🎬 Starting video to frames conversion...'));
             console.log(chalk.gray(`Input: ${videoPath}`));
             console.log(chalk.gray(`Output: ${outputDir}`));
-            console.log(chalk.gray(`Target frames: ${this.targetFrameCount}`));
 
             // Validate input file
             if (!fs.existsSync(videoPath)) {
@@ -219,16 +258,39 @@ class VideoToFramesConverter {
             console.log(chalk.yellow('📊 Analyzing video metadata...'));
             const metadata = await this.getVideoMetadata(videoPath);
             
+            // Determine frame count
+            let actualFrameCount;
+            if (options.frameCount) {
+                actualFrameCount = options.frameCount;
+                this.targetFrameCount = actualFrameCount;
+            } else if (this.autoFrameCount) {
+                actualFrameCount = this.calculateAutoFrameCount(metadata);
+                this.targetFrameCount = actualFrameCount;
+            } else {
+                actualFrameCount = this.targetFrameCount;
+            }
+
+            // Apply custom frame rate if specified
+            let effectiveFrameRate = metadata.frameRate;
+            if (options.frameRate || this.customFrameRate) {
+                effectiveFrameRate = options.frameRate || this.customFrameRate;
+                console.log(chalk.cyan(`Using custom frame rate: ${effectiveFrameRate} fps`));
+            }
+            
             console.log(chalk.cyan(`Video info:`));
             console.log(chalk.gray(`  Duration: ${metadata.duration.toFixed(2)}s`));
-            console.log(chalk.gray(`  Frame rate: ${metadata.frameRate.toFixed(2)} fps`));
+            console.log(chalk.gray(`  Frame rate: ${metadata.frameRate.toFixed(2)} fps (original)`));
+            if (effectiveFrameRate !== metadata.frameRate) {
+                console.log(chalk.gray(`  Effective frame rate: ${effectiveFrameRate.toFixed(2)} fps (custom)`));
+            }
             console.log(chalk.gray(`  Total frames: ${metadata.totalFrames}`));
             console.log(chalk.gray(`  Resolution: ${metadata.width}x${metadata.height}`));
             console.log(chalk.gray(`  Codec: ${metadata.codec}`));
-            console.log(chalk.green(`  Output resolution: Original (${metadata.width}x${metadata.height})`));
+            console.log(chalk.gray(`  Output resolution: Original (${metadata.width}x${metadata.height})`));
+            console.log(chalk.cyan(`  Extracting: ${actualFrameCount} frames ${this.autoFrameCount ? '(auto)' : '(manual)'}`));
 
             // Calculate frame timestamps
-            const timestamps = this.calculateFrameTimestamps(metadata.totalFrames, metadata.duration);
+            const timestamps = this.calculateFrameTimestamps(metadata.totalFrames, metadata.duration, actualFrameCount);
             console.log(chalk.yellow(`🎯 Calculated ${timestamps.length} evenly spaced timestamps`));
 
             // Create progress bar
@@ -238,7 +300,7 @@ class VideoToFramesConverter {
                     complete: '█',
                     incomplete: '░',
                     width: 40,
-                    total: this.targetFrameCount
+                    total: actualFrameCount
                 }
             );
 
@@ -257,14 +319,16 @@ class VideoToFramesConverter {
                 }
             }
 
-            console.log(chalk.green(`\n✅ Successfully extracted ${this.targetFrameCount} frames!`));
+            console.log(chalk.green(`\n✅ Successfully extracted ${actualFrameCount} frames!`));
             console.log(chalk.gray(`Frames saved to: ${path.resolve(outputDir)}`));
             
             return {
                 success: true,
-                totalFrames: this.targetFrameCount,
+                totalFrames: actualFrameCount,
                 outputDirectory: path.resolve(outputDir),
-                originalVideoInfo: metadata
+                originalVideoInfo: metadata,
+                extractionMode: this.autoFrameCount ? 'auto' : 'manual',
+                effectiveFrameRate: effectiveFrameRate
             };
 
         } catch (error) {

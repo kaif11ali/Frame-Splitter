@@ -148,6 +148,26 @@
             font-size: 0.95em;
         }
 
+        .label-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-tooltip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #D4C4B0;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            cursor: help;
+            font-weight: bold;
+        }
+
         .input-group input {
             width: 100%;
             padding: 14px 16px;
@@ -168,6 +188,54 @@
 
         .input-group input::placeholder {
             color: #B5A595;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5DDD0;
+            border-radius: 10px;
+            font-size: 0.95em;
+            transition: border-color 0.3s ease;
+            background: #FAFAF8;
+            color: #5a4a3a;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+
+        .input-group select:focus {
+            outline: none;
+            border-color: #A5755E;
+            background: white;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 12px;
+            background: #F9F6F2;
+            border-radius: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #A5755E;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            user-select: none;
         }
 
         .button-group {
@@ -349,13 +417,43 @@
                 <input type="text" id="outputPath" placeholder="Select output folder..." readonly>
             </div>
 
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="frameMode">
+                        <span class="label-inline">
+                            Frame Count Mode
+                            <span class="info-tooltip" title="Auto: Extract 1 frame per second&#10;Custom: Specify exact number of frames">?</span>
+                        </span>
+                    </label>
+                    <select id="frameMode">
+                        <option value="auto">Auto (1 frame/sec)</option>
+                        <option value="custom">Custom Count</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="frameCount">Number of Frames:</label>
+                    <input type="number" id="frameCount" placeholder="e.g., 300" min="1" max="10000" disabled>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="customFrameRate">
+                <label for="customFrameRate">Use Custom Frame Rate</label>
+            </div>
+
+            <div class="input-group" id="frameRateGroup" style="display: none;">
+                <label for="frameRate">Frame Rate (fps):</label>
+                <input type="number" id="frameRate" placeholder="e.g., 30" min="1" max="120" step="0.01">
+            </div>
+
             <div class="button-group">
                 <button class="btn btn-secondary" id="selectVideoBtn">Select Video</button>
                 <button class="btn btn-secondary" id="selectOutputBtn">Select Output Folder</button>
             </div>
 
             <button class="btn btn-primary" id="convertBtn" disabled>
-                Convert to 300 Frames
+                Convert Video
             </button>
         </div>
 
@@ -378,11 +476,17 @@
     <script>
         let selectedVideoPath = '';
         let selectedOutputPath = '';
+        let videoMetadata = null;
 
         const dropZone = document.getElementById('dropZone');
         const fileInfo = document.getElementById('fileInfo');
         const fileInfoGrid = document.getElementById('fileInfoGrid');
         const outputPathInput = document.getElementById('outputPath');
+        const frameModeSelect = document.getElementById('frameMode');
+        const frameCountInput = document.getElementById('frameCount');
+        const customFrameRateCheckbox = document.getElementById('customFrameRate');
+        const frameRateGroup = document.getElementById('frameRateGroup');
+        const frameRateInput = document.getElementById('frameRate');
         const selectVideoBtn = document.getElementById('selectVideoBtn');
         const selectOutputBtn = document.getElementById('selectOutputBtn');
         const convertBtn = document.getElementById('convertBtn');
@@ -390,6 +494,34 @@
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const status = document.getElementById('status');
+
+        // Frame mode change handler
+        frameModeSelect.addEventListener('change', () => {
+            if (frameModeSelect.value === 'custom') {
+                frameCountInput.disabled = false;
+                frameCountInput.value = '300'; // Default value
+            } else {
+                frameCountInput.disabled = true;
+                frameCountInput.value = '';
+                if (videoMetadata) {
+                    const autoCount = Math.min(Math.floor(videoMetadata.duration), videoMetadata.totalFrames);
+                    frameCountInput.placeholder = `Auto: ~${autoCount} frames`;
+                }
+            }
+        });
+
+        // Custom frame rate checkbox handler
+        customFrameRateCheckbox.addEventListener('change', () => {
+            if (customFrameRateCheckbox.checked) {
+                frameRateGroup.style.display = 'block';
+                if (videoMetadata) {
+                    frameRateInput.value = videoMetadata.frameRate.toFixed(2);
+                }
+            } else {
+                frameRateGroup.style.display = 'none';
+                frameRateInput.value = '';
+            }
+        });
 
         // Drag and drop handlers
         dropZone.addEventListener('dragover', (e) => {
@@ -465,7 +597,14 @@
                 const result = await window.electronAPI.getVideoInfo(videoPath);
                 
                 if (result.success) {
-                    displayVideoInfo(videoPath, result.data);
+                    videoMetadata = result.data;
+                    displayVideoInfo(videoPath, videoMetadata);
+                    
+                    // Update auto frame count placeholder
+                    if (frameModeSelect.value === 'auto') {
+                        const autoCount = Math.min(Math.floor(videoMetadata.duration), videoMetadata.totalFrames);
+                        frameCountInput.placeholder = `Auto: ~${autoCount} frames`;
+                    }
                     
                     // Set default output path
                     if (!selectedOutputPath) {
@@ -520,12 +659,40 @@
             progressContainer.style.display = 'block';
             showStatus('Starting conversion...', 'info');
 
+            // Prepare conversion options
+            const options = {};
+            
+            if (frameModeSelect.value === 'auto') {
+                options.autoFrameCount = true;
+            } else {
+                const frameCount = parseInt(frameCountInput.value);
+                if (!frameCount || frameCount < 1) {
+                    showStatus('Please enter a valid frame count.', 'error');
+                    convertBtn.disabled = false;
+                    progressContainer.style.display = 'none';
+                    return;
+                }
+                options.frameCount = frameCount;
+            }
+
+            if (customFrameRateCheckbox.checked) {
+                const frameRate = parseFloat(frameRateInput.value);
+                if (!frameRate || frameRate < 1) {
+                    showStatus('Please enter a valid frame rate.', 'error');
+                    convertBtn.disabled = false;
+                    progressContainer.style.display = 'none';
+                    return;
+                }
+                options.frameRate = frameRate;
+            }
+
             try {
-                const result = await window.electronAPI.convertVideo(selectedVideoPath, selectedOutputPath);
+                const result = await window.electronAPI.convertVideo(selectedVideoPath, selectedOutputPath, options);
                 
                 if (result.success) {
-                    showStatus(`✅ Successfully converted video to 300 frames!\nOutput saved to: ${result.data.outputDirectory}`, 'success');
-                    updateProgress(300, 300, 100);
+                    const mode = result.data.extractionMode === 'auto' ? 'Auto' : 'Custom';
+                    showStatus(`✅ Successfully converted video to ${result.data.totalFrames} frames (${mode} mode)!\nOutput saved to: ${result.data.outputDirectory}`, 'success');
+                    updateProgress(result.data.totalFrames, result.data.totalFrames, 100);
                 } else {
                     showStatus(`❌ Conversion failed: ${result.error}`, 'error');
                 }
