@@ -1,30 +1,128 @@
-# Video to Frames Converter
+# 🎬 Frame Splitter - Video to Frames Converter
 
-A powerful Node.js tool that converts any video into exactly 300 evenly spaced PNG frames in the original resolution with highest quality. Features both CLI and optional Electron GUI interfaces.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-Included-blue.svg)](https://ffmpeg.org/)
 
-## 🎬 Features
+**Frame Splitter** is a powerful, professional-grade Node.js tool that converts any video into exactly 300 evenly spaced PNG frames while preserving the original resolution and highest quality. Perfect for video analysis, machine learning datasets, animation projects, and content creation.
 
-- **Precise Frame Extraction**: Always extracts exactly 300 evenly spaced frames
-- **High Quality Output**: Uses FFmpeg with highest quality PNG settings (`-q:v 1`)
-- **Original Resolution**: Preserves the original video resolution (no upscaling/downscaling)
-- **Multiple Interfaces**: CLI tool, programmatic API, and optional Electron GUI
-- **Cross-Platform**: Works on Windows, macOS, and Linux
-- **Comprehensive Logging**: Progress tracking and detailed console output
-- **Batch Processing**: Convert multiple videos at once
-- **Smart Frame Selection**: Calculates optimal frame spacing based on video duration
+## 🏷️ Hashtags & Keywords
 
-## 📋 Requirements
+### Popular Hashtags
+`#VideoToImage` `#FrameSplitter` `#ImageSplitter` `#VideoConverter` `#FrameExtractor` `#VideoToFrames` `#ImageExtractor` `#VideoProcessing` `#FFmpeg` `#NodeJS` `#VideoAnalysis` `#MachineLearning` `#ComputerVision` `#VideoEditing` `#ContentCreation` `#Animation` `#Thumbnails` `#VideoTools` `#ImageProcessing` `#MediaConverter` `#VideoSplitter` `#FrameByFrame` `#VideoBreakdown` `#ImageSequence` `#VideoCapture` `#ScreenCapture` `#VideoPreview` `#VideoThumbnail` `#BatchConverter` `#CrossPlatform` `#OpenSource` `#MIT` `#GitHub` `#CLI` `#GUI` `#Electron` `#JavaScript` `#EditorCanUseImageSplitter` `#VideoToImageConverter` `#FrameExtraction` `#ImageSeparator`
 
-- Node.js 14.0.0 or higher
-- FFmpeg (automatically installed via ffmpeg-static)
+### Search Keywords
+- **Video Processing**: `video to image converter`, `frame splitter`, `video frame extractor`, `video to png converter`
+- **Image Processing**: `image splitter`, `frame separator`, `video breakdown tool`, `image sequence generator`
+- **Content Creation**: `video thumbnail generator`, `frame by frame extractor`, `video preview maker`, `animation frame creator`
+- **Development Tools**: `ffmpeg wrapper`, `nodejs video tool`, `cross platform converter`, `batch video processor`
+- **Machine Learning**: `dataset creator`, `video analysis tool`, `computer vision frames`, `ml training data`
+- **Video Editing**: `video frame capture`, `precise frame extraction`, `high quality frames`, `original resolution frames`
 
-## 🚀 Installation
+### Social Media Tags
+`#VideoToImageSplitter` `#FrameSplitterTool` `#EditorCanUseImageSplitter` `#VideoFrameExtractor` `#ImageProcessingTool` `#VideoConverter` `#OpenSourceTools` `#DeveloperTools` `#VideoAnalysis` `#ContentCreatorTools`
 
-1. Clone or download this repository
-2. Install dependencies:
+---
+
+## � Why Choose Frame Splitter?
+
+### 🎯 **Perfect for Video Analysis**
+- Extract frames for machine learning training datasets
+- Analyze video content frame by frame
+- Create thumbnails and previews
+- Quality control and video inspection
+
+### 🚀 **Professional Quality**
+- **Highest Quality Output**: Uses FFmpeg with premium PNG settings (`-q:v 1`)
+- **Original Resolution**: No quality loss, no upscaling/downscaling
+- **Precise Frame Selection**: Mathematically calculated even spacing
+- **Batch Processing**: Handle multiple videos efficiently
+
+### 💼 **Multiple Use Cases**
+- **Content Creation**: Extract frames for video editing
+- **Animation**: Create sprite sheets and animation frames
+- **Research**: Video analysis and computer vision projects
+- **Quality Assurance**: Frame-by-frame video inspection
+- **Thumbnails**: Generate high-quality video previews
+
+### 🛠️ **Developer Friendly**
+- **Multiple Interfaces**: CLI, programmatic API, and GUI
+- **Cross-Platform**: Windows, macOS, and Linux support
+- **Zero Configuration**: FFmpeg included, works out of the box
+- **Comprehensive Logging**: Track progress and debug issues
+
+---
+
+## ✨ Key Features
+
+- 🎯 **Precise Frame Extraction**: Always extracts exactly 300 evenly spaced frames
+- 🌟 **Highest Quality Output**: Professional-grade PNG compression
+- 📐 **Original Resolution**: Preserves source video dimensions perfectly
+- 🖥️ **Multiple Interfaces**: CLI tool, Node.js API, and Electron GUI
+- 🌐 **Cross-Platform**: Works seamlessly on Windows, macOS, and Linux
+- 📊 **Progress Tracking**: Real-time progress bars and detailed logging
+- 📦 **Batch Processing**: Convert multiple videos simultaneously
+- 🧠 **Smart Frame Selection**: Intelligent timestamp calculation
+- ⚡ **Fast Processing**: Optimized FFmpeg operations
+- 🔧 **No Dependencies**: FFmpeg bundled, no external installations needed
+
+---
+
+## 📋 System Requirements
+
+- **Node.js**: Version 14.0.0 or higher
+- **Operating System**: Windows 10+, macOS 10.14+, or Linux (Ubuntu 18.04+)
+- **RAM**: Minimum 4GB (8GB recommended for large videos)
+- **Storage**: Sufficient space for output frames (300 PNG files per video)
+- **FFmpeg**: Automatically included via ffmpeg-static
+
+---
+
+## 🚀 Installation Methods
+
+### Method 1: Clone from GitHub (Recommended)
 
 ```bash
+# Clone the repository
+git clone https://github.com/kaif11ali/Frame-Splitter.git
+
+# Navigate to the project directory
+cd Frame-Splitter
+
+# Install dependencies
 npm install
+```
+
+### Method 2: Download ZIP
+
+1. Visit the [GitHub Repository](https://github.com/kaif11ali/Frame-Splitter)
+2. Click the green "Code" button
+3. Select "Download ZIP"
+4. Extract the ZIP file
+5. Open terminal/command prompt in the extracted folder
+6. Run `npm install`
+
+### Method 3: NPM Global Installation (if published)
+
+```bash
+# Install globally (if available on NPM)
+npm install -g video-to-frames
+
+# Use anywhere
+video-to-frames convert your-video.mp4
+```
+
+### 🔧 Verify Installation
+
+```bash
+# Check if Node.js is installed
+node --version
+
+# Test the tool
+node cli.js --help
+
+# Test with a sample video
+node cli.js info your-video.mp4
 ```
 
 ## 💻 Usage
