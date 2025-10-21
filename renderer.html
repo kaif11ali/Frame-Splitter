@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video to Frames Converter</title>
+    <title>Frame Splitter</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -46,8 +46,16 @@
         }
 
         .logo-icon {
-            font-size: 2.2em;
-            color: #A5755E;
+            width: 80px;
+            height: 80px;
+            display: inline-block;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            margin-right: -30px;
         }
 
         h1 {
@@ -405,14 +413,14 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <span class="logo-icon">🎬</span>
-                <h1>Frame Extractor</h1>
+                <span class="logo-icon"><img src="Image spltter.png" alt="Frame Splitter Logo"></span>
+                <h1>Frame Splitter</h1>
             </div>
-            <p class="subtitle">Transform your videos with precision and elegance</p>
+            <p class="subtitle">Split your videos into high-quality images instantly</p>
         </div>
         
         <div class="drop-zone" id="dropZone">
-            <div class="icon">📹</div>
+            <div class="icon"><img src="Image spltter.png" style="width: 80px; height: 80px; opacity: 0.6;"></div>
             <div class="drop-zone-text">Drag and drop your video file here</div>
             <div class="drop-zone-subtext">or</div>
             <button class="btn btn-primary" id="dropZoneBtn" style="margin-top: 15px; display: inline-block;">Select Video File</button>
@@ -467,8 +475,14 @@
             </div>
 
             <button class="btn btn-primary" id="convertBtn" disabled>
-                Convert Video
+                Convert Images
             </button>
+            
+            <div class="conversion-complete-message" id="conversionCompleteMessage" style="display: none;">
+                <p style="color: #4CAF50; font-weight: 600; margin-top: 15px; font-size: 1.05em;">
+                    ✅ You can check your images in the selected folder
+                </p>
+            </div>
         </div>
 
         <div class="progress-container" id="progressContainer">
@@ -505,6 +519,7 @@
         const selectVideoBtn = document.getElementById('selectVideoBtn');
         const selectOutputBtn = document.getElementById('selectOutputBtn');
         const convertBtn = document.getElementById('convertBtn');
+        const conversionCompleteMessage = document.getElementById('conversionCompleteMessage');
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
@@ -675,6 +690,7 @@
 
         async function convertVideo() {
             convertBtn.disabled = true;
+            conversionCompleteMessage.style.display = 'none';
             progressContainer.style.display = 'block';
             showStatus('Starting conversion...', 'info');
 
@@ -712,6 +728,11 @@
                     const mode = result.data.extractionMode === 'auto' ? 'Auto' : 'Custom';
                     showStatus(`✅ Successfully converted video to ${result.data.totalFrames} frames (${mode} mode)!\nOutput saved to: ${result.data.outputDirectory}`, 'success');
                     updateProgress(result.data.totalFrames, result.data.totalFrames, 100);
+                    
+                    // Update button text and show completion message
+                    convertBtn.textContent = '✅ Images Converted';
+                    convertBtn.style.background = '#4CAF50';
+                    conversionCompleteMessage.style.display = 'block';
                 } else {
                     showStatus(`❌ Conversion failed: ${result.error}`, 'error');
                 }

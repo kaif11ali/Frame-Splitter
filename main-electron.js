@@ -14,8 +14,8 @@ function createWindow() {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js')
         },
-        icon: path.join(__dirname, 'icon.png'), // Add an icon if you have one
-        title: 'Video to Frames Converter'
+        icon: path.join(__dirname, 'Image spltter.png'),
+        title: 'Frame Splitter'
     });
 
     mainWindow.loadFile('renderer.html');
