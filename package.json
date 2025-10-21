@@ -11,6 +11,8 @@
     "cli": "node cli.js",
     "electron": "electron main-electron.js",
     "build": "npm install",
+    "build:win": "electron-builder --win",
+    "build:all": "electron-builder -mwl",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -33,9 +35,40 @@
     "progress": "^2.0.3"
   },
   "devDependencies": {
-    "electron": "^27.0.0"
+    "electron": "^27.0.0",
+    "electron-builder": "^26.0.12",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.4"
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "build": {
+    "appId": "com.kaifali.framesplitter",
+    "productName": "Frame Splitter",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "icon.ico",
+      "sign": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*",
+      "node_modules/ffmpeg-static/**/*",
+      "node_modules/ffprobe-static/**/*",
+      "node_modules/@ffmpeg-installer/**/*"
+    ]
   }
 }
