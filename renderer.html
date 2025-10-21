@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video to Frames Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,162 +13,199 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #E8DCC8;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #333;
+            color: #5a4a3a;
+            padding: 20px;
         }
 
         .container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 60px 50px;
+            max-width: 750px;
+            width: 100%;
             text-align: center;
         }
 
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.2em;
+            color: #A5755E;
+        }
+
         h1 {
-            color: #4a5568;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            font-family: 'Playfair Display', serif;
+            color: #A5755E;
+            margin: 0;
+            font-size: 3.2em;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            display: inline;
         }
 
         .subtitle {
-            color: #718096;
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            color: #8B7355;
+            margin-top: 12px;
+            font-size: 1.05em;
+            font-weight: 400;
+            letter-spacing: 0.2px;
         }
 
         .drop-zone {
-            border: 3px dashed #cbd5e0;
-            border-radius: 10px;
-            padding: 60px 20px;
-            margin: 20px 0;
+            border: 2px dashed #D4C4B0;
+            border-radius: 16px;
+            padding: 70px 30px;
+            margin: 30px 0;
             transition: all 0.3s ease;
             cursor: pointer;
-            background: #f7fafc;
+            background: #FAFAF8;
         }
 
         .drop-zone:hover,
         .drop-zone.drag-over {
-            border-color: #667eea;
-            background: #edf2f7;
-            transform: translateY(-2px);
+            border-color: #A5755E;
+            background: #F5F1EC;
+            border-style: solid;
         }
 
         .drop-zone-text {
-            font-size: 1.2em;
-            color: #4a5568;
-            margin-bottom: 10px;
+            font-size: 1.15em;
+            color: #7A6A5A;
+            margin-bottom: 12px;
+            font-weight: 500;
         }
 
         .drop-zone-subtext {
-            color: #718096;
-            font-size: 0.9em;
+            color: #9B8B7B;
+            font-size: 0.95em;
+            font-weight: 400;
         }
 
         .file-info {
-            background: #f0fff4;
-            border: 1px solid #9ae6b4;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+            background: #F9F6F2;
+            border: 1px solid #E5DDD0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
             text-align: left;
             display: none;
         }
 
         .file-info h3 {
-            color: #2d3748;
-            margin-bottom: 10px;
+            color: #5a4a3a;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1em;
         }
 
         .file-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            font-size: 0.9em;
+            gap: 12px;
+            font-size: 0.95em;
         }
 
         .file-info-item {
-            color: #4a5568;
+            color: #6B5B4B;
         }
 
         .file-info-label {
-            font-weight: bold;
-            color: #2d3748;
+            font-weight: 600;
+            color: #5a4a3a;
         }
 
         .controls {
-            margin: 20px 0;
+            margin: 25px 0;
         }
 
         .input-group {
-            margin: 15px 0;
+            margin: 18px 0;
             text-align: left;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #4a5568;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #5a4a3a;
+            font-size: 0.95em;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1em;
+            padding: 14px 16px;
+            border: 2px solid #E5DDD0;
+            border-radius: 10px;
+            font-size: 0.95em;
             transition: border-color 0.3s ease;
+            background: #FAFAF8;
+            color: #5a4a3a;
+            font-family: 'Inter', sans-serif;
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #A5755E;
+            background: white;
+        }
+
+        .input-group input::placeholder {
+            color: #B5A595;
         }
 
         .button-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin: 20px 0;
         }
 
         .btn {
             flex: 1;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-family: 'Inter', sans-serif;
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #A5755E;
             color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #8F6450;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(165, 117, 94, 0.3);
         }
 
         .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
+            background: #F0E8DD;
+            color: #6B5B4B;
         }
 
         .btn-secondary:hover {
-            background: #cbd5e0;
+            background: #E5DDD0;
         }
 
         .btn:disabled {
@@ -177,20 +215,20 @@
         }
 
         .progress-container {
-            margin: 20px 0;
+            margin: 25px 0;
             display: none;
         }
 
         .progress-bar {
-            background: #e2e8f0;
+            background: #F0E8DD;
             border-radius: 10px;
-            height: 20px;
+            height: 22px;
             overflow: hidden;
-            margin: 10px 0;
+            margin: 12px 0;
         }
 
         .progress-fill {
-            background: linear-gradient(45deg, #48bb78, #38a169);
+            background: #A5755E;
             height: 100%;
             width: 0%;
             transition: width 0.3s ease;
@@ -198,39 +236,63 @@
         }
 
         .progress-text {
-            color: #4a5568;
-            font-weight: bold;
+            color: #5a4a3a;
+            font-weight: 500;
+            font-size: 0.95em;
         }
 
         .status {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
             display: none;
+            font-size: 0.95em;
         }
 
         .status.success {
-            background: #f0fff4;
-            border: 1px solid #9ae6b4;
-            color: #2f855a;
+            background: #EDF7ED;
+            border: 1px solid #B7D9B7;
+            color: #3A7A3A;
         }
 
         .status.error {
-            background: #fed7d7;
-            border: 1px solid #feb2b2;
-            color: #c53030;
+            background: #FDECEA;
+            border: 1px solid #F5C6CB;
+            color: #C53030;
         }
 
         .status.info {
-            background: #ebf8ff;
-            border: 1px solid #90cdf4;
-            color: #2b6cb0;
+            background: #EEF3F9;
+            border: 1px solid #C5D9ED;
+            color: #2B5B8F;
         }
 
         .icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            opacity: 0.7;
+            font-size: 3.5em;
+            margin-bottom: 18px;
+            opacity: 0.6;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #E5DDD0;
+            color: #A5755E;
+            font-size: 0.9em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .footer .heart {
+            color: #D4756B;
+            display: inline-block;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
         }
 
         @keyframes pulse {
@@ -241,17 +303,37 @@
         .loading {
             animation: pulse 2s infinite;
         }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎬 Video to Frames</h1>
-        <p class="subtitle">Convert videos to exactly 300 evenly spaced PNG frames in full HD quality</p>
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <h1>Frame Extractor</h1>
+            </div>
+            <p class="subtitle">Transform your videos with precision and elegance</p>
+        </div>
         
         <div class="drop-zone" id="dropZone">
-            <div class="icon">📹</div>
-            <div class="drop-zone-text">Drop your video file here</div>
-            <div class="drop-zone-subtext">or click to browse (MP4, AVI, MOV, MKV, WMV, etc.)</div>
+            <div class="icon">�</div>
+            <div class="drop-zone-text">Drag and drop your video file here</div>
+            <div class="drop-zone-subtext">or</div>
+            <button class="btn btn-primary" style="margin-top: 15px; display: inline-block;">Select Video File</button>
         </div>
 
         <div class="file-info" id="fileInfo">
@@ -273,7 +355,7 @@
             </div>
 
             <button class="btn btn-primary" id="convertBtn" disabled>
-                🚀 Convert to 300 Frames
+                Convert to 300 Frames
             </button>
         </div>
 
@@ -286,6 +368,10 @@
 
         <div class="status" id="status">
             <!-- Status messages will appear here -->
+        </div>
+
+        <div class="footer">
+            MADE BY <span class="heart">❤️</span> KAIFALI
         </div>
     </div>
 
