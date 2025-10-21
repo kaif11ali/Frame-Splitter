@@ -85,6 +85,20 @@
             border-style: solid;
         }
 
+        .drop-zone.file-selected {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+            border-style: solid;
+        }
+
+        .drop-zone.file-selected .btn-primary {
+            background: #4CAF50;
+        }
+
+        .drop-zone.file-selected .btn-primary:hover {
+            background: #45a049;
+        }
+
         .drop-zone-text {
             font-size: 1.15em;
             color: #7A6A5A;
@@ -398,10 +412,10 @@
         </div>
         
         <div class="drop-zone" id="dropZone">
-            <div class="icon">�</div>
+            <div class="icon">📹</div>
             <div class="drop-zone-text">Drag and drop your video file here</div>
             <div class="drop-zone-subtext">or</div>
-            <button class="btn btn-primary" style="margin-top: 15px; display: inline-block;">Select Video File</button>
+            <button class="btn btn-primary" id="dropZoneBtn" style="margin-top: 15px; display: inline-block;">Select Video File</button>
         </div>
 
         <div class="file-info" id="fileInfo">
@@ -479,6 +493,7 @@
         let videoMetadata = null;
 
         const dropZone = document.getElementById('dropZone');
+        const dropZoneBtn = document.getElementById('dropZoneBtn');
         const fileInfo = document.getElementById('fileInfo');
         const fileInfoGrid = document.getElementById('fileInfoGrid');
         const outputPathInput = document.getElementById('outputPath');
@@ -599,6 +614,10 @@
                 if (result.success) {
                     videoMetadata = result.data;
                     displayVideoInfo(videoPath, videoMetadata);
+                    
+                    // Update drop zone to show file selected
+                    dropZone.classList.add('file-selected');
+                    dropZoneBtn.textContent = '✓ File Selected';
                     
                     // Update auto frame count placeholder
                     if (frameModeSelect.value === 'auto') {
