@@ -9,10 +9,14 @@
   "scripts": {
     "start": "node index.js",
     "cli": "node cli.js",
-    "electron": "electron main-electron.js",
-    "build": "npm install",
-    "build:win": "electron-builder --win",
-    "build:all": "electron-builder -mwl",
+    "dev": "vite",
+    "build:react": "vite build",
+    "electron": "cross-env NODE_ENV=development electron main-electron.js",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron main-electron.js\"",
+    "electron:build": "npm run build:react && electron main-electron.js",
+    "build": "npm run build:react",
+    "build:win": "npm run build:react && electron-builder --win",
+    "build:all": "npm run build:react && electron-builder -mwl",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -63,13 +67,22 @@
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
-    "progress": "^2.0.3"
+    "progress": "^2.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "electron": "^27.0.0",
     "electron-builder": "^26.0.12",
     "png-to-ico": "^3.0.1",
-    "sharp": "^0.34.4"
+    "sharp": "^0.34.4",
+    "vite": "^5.4.21",
+    "wait-on": "^7.2.0"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -95,7 +108,13 @@
       "output": "dist"
     },
     "files": [
-      "**/*",
+      "dist-react/**/*",
+      "main-electron.js",
+      "preload.js",
+      "VideoToFramesConverter.js",
+      "icon.ico",
+      "Image spltter.png",
+      "package.json",
       "!node_modules/**/*",
       "node_modules/ffmpeg-static/**/*",
       "node_modules/ffprobe-static/**/*",

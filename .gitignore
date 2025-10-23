@@ -41,8 +41,10 @@ Thumbs.db
 
 # Electron
 dist/
+dist-react/
 build/
 out/
+.webpack/
 
 # Environment variables
 .env

@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+    getDownloadsPath: () => ipcRenderer.invoke('get-downloads-path'),
     selectVideoFile: () => ipcRenderer.invoke('select-video-file'),
     selectOutputFolder: () => ipcRenderer.invoke('select-output-folder'),
     getVideoInfo: (videoPath) => ipcRenderer.invoke('get-video-info', videoPath),

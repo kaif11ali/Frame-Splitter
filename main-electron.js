@@ -7,8 +7,8 @@ let converter;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 900,
+        height: 700,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -18,11 +18,12 @@ function createWindow() {
         title: 'Frame Splitter'
     });
 
-    mainWindow.loadFile('renderer.html');
-    
-    // Open DevTools in development
+    // Load from dist-react in production, dev server in development
     if (process.env.NODE_ENV === 'development') {
+        mainWindow.loadURL('http://localhost:5173');
         mainWindow.webContents.openDevTools();
+    } else {
+        mainWindow.loadFile(path.join(__dirname, 'dist-react', 'index.html'));
     }
 }
 
@@ -40,6 +41,11 @@ app.on('window-all-closed', () => {
 });
 
 // IPC Handlers
+ipcMain.handle('get-downloads-path', async () => {
+    // Get the Downloads folder path
+    return app.getPath('downloads');
+});
+
 ipcMain.handle('select-video-file', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
         properties: ['openFile'],
