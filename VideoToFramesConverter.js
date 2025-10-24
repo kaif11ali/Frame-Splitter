@@ -10,15 +10,27 @@ const ProgressBar = require('progress');
 // Try to set FFmpeg path from multiple sources
 try {
     if (ffmpegStatic) {
-        ffmpeg.setFfmpegPath(ffmpegStatic);
+        // Replace .asar paths to work in packaged app
+        const ffmpegPath = ffmpegStatic.replace('app.asar', 'app.asar.unpacked');
+        ffmpeg.setFfmpegPath(ffmpegPath);
+        console.log('FFmpeg path:', ffmpegPath);
     } else if (ffmpegInstaller.path) {
-        ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+        const ffmpegPath = ffmpegInstaller.path.replace('app.asar', 'app.asar.unpacked');
+        ffmpeg.setFfmpegPath(ffmpegPath);
+        console.log('FFmpeg path:', ffmpegPath);
     }
 } catch (error) {
     console.log(chalk.yellow('⚠️  Using system FFmpeg installation'));
 }
 
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+// Set ffprobe path with ASAR fix
+try {
+    const ffprobePath = ffprobeStatic.path.replace('app.asar', 'app.asar.unpacked');
+    ffmpeg.setFfprobePath(ffprobePath);
+    console.log('FFprobe path:', ffprobePath);
+} catch (error) {
+    console.log(chalk.yellow('⚠️  Using system FFprobe installation'));
+}
 
 class VideoToFramesConverter {
     constructor() {
