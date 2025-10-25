@@ -1,9 +1,26 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const VideoToFramesConverter = require('./VideoToFramesConverter');
 
 let mainWindow;
 let converter;
+
+function resolveIconPath() {
+    // In production, resources are under process.resourcesPath
+    const candidates = [
+        path.join(__dirname, 'icon.ico'),
+        path.join(process.resourcesPath || '', 'icon.ico'),
+        path.join(app.getAppPath(), 'icon.ico')
+    ];
+    for (const p of candidates) {
+        try {
+            if (p && fs.existsSync(p)) return p;
+        } catch (_) {}
+    }
+    // Fallback: Electron default (undefined)
+    return undefined;
+}
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -14,7 +31,7 @@ function createWindow() {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js')
         },
-        icon: path.join(__dirname, 'icon.ico'),
+        icon: resolveIconPath(),
         title: 'Frame Splitter'
     });
 
@@ -28,6 +45,12 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+    // Ensure proper taskbar icon and app identity on Windows
+    try {
+        if (process.platform === 'win32') {
+            app.setAppUserModelId('com.kaifali.framesplitter');
+        }
+    } catch (_) {}
     converter = new VideoToFramesConverter();
     createWindow();
 

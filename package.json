@@ -1,7 +1,7 @@
 {
-  "name": "video-to-frames",
+  "name": "frame-splitter",
   "version": "1.0.0",
-  "description": "A Node.js tool that converts videos to exactly 300 evenly spaced PNG frames in original resolution with highest quality",
+  "description": "Split videos into frames instantly - Extract 300 high-quality PNG frames from any video with ease",
   "main": "main-electron.js",
   "bin": {
     "video-to-frames": "./cli.js"
@@ -58,7 +58,7 @@
     "electron",
     "editor-can-use-image-splitter"
   ],
-  "author": "Your Name",
+  "author": "Kaif Ali (KF)",
   "license": "MIT",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -96,12 +96,12 @@
       "node_modules/ffprobe-static/**/*",
       "node_modules/@ffmpeg-installer/**/*"
     ],
-    "win": {
+  "win": {
       "target": [
         "nsis",
         "portable"
       ],
-      "icon": "icon.ico",
+  "icon": "build/icon.ico",
       "verifyUpdateCodeSignature": false,
       "signAndEditExecutable": false
     },
