@@ -6,24 +6,6 @@
 
 **Frame Splitter** is a powerful, professional-grade Node.js tool that converts any video into exactly 300 evenly spaced PNG frames while preserving the original resolution and highest quality. Perfect for video analysis, machine learning datasets, animation projects, and content creation.
 
-## 🏷️ Hashtags & Keywords
-
-### Popular Hashtags
-`#VideoToImage` `#FrameSplitter` `#ImageSplitter` `#VideoConverter` `#FrameExtractor` `#VideoToFrames` `#ImageExtractor` `#VideoProcessing` `#FFmpeg` `#NodeJS` `#VideoAnalysis` `#MachineLearning` `#ComputerVision` `#VideoEditing` `#ContentCreation` `#Animation` `#Thumbnails` `#VideoTools` `#ImageProcessing` `#MediaConverter` `#VideoSplitter` `#FrameByFrame` `#VideoBreakdown` `#ImageSequence` `#VideoCapture` `#ScreenCapture` `#VideoPreview` `#VideoThumbnail` `#BatchConverter` `#CrossPlatform` `#OpenSource` `#MIT` `#GitHub` `#CLI` `#GUI` `#Electron` `#JavaScript` `#EditorCanUseImageSplitter` `#VideoToImageConverter` `#FrameExtraction` `#ImageSeparator`
-
-### Search Keywords
-- **Video Processing**: `video to image converter`, `frame splitter`, `video frame extractor`, `video to png converter`
-- **Image Processing**: `image splitter`, `frame separator`, `video breakdown tool`, `image sequence generator`
-- **Content Creation**: `video thumbnail generator`, `frame by frame extractor`, `video preview maker`, `animation frame creator`
-- **Development Tools**: `ffmpeg wrapper`, `nodejs video tool`, `cross platform converter`, `batch video processor`
-- **Machine Learning**: `dataset creator`, `video analysis tool`, `computer vision frames`, `ml training data`
-- **Video Editing**: `video frame capture`, `precise frame extraction`, `high quality frames`, `original resolution frames`
-
-### Social Media Tags
-`#VideoToImageSplitter` `#FrameSplitterTool` `#EditorCanUseImageSplitter` `#VideoFrameExtractor` `#ImageProcessingTool` `#VideoConverter` `#OpenSourceTools` `#DeveloperTools` `#VideoAnalysis` `#ContentCreatorTools`
-
----
-
 ## � Why Choose Frame Splitter?
 
 ### 🎯 **Perfect for Video Analysis**
